@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="InvoiceMate" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>InvoiceMate Local</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/print.css" media="print" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true">IM</div>
+          <div>
+            <p class="eyebrow">Local-first</p>
+            <h1>InvoiceMate</h1>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-link is-active" data-view="dashboard" type="button">Dashboard</button>
+          <button class="nav-link" data-view="builder" type="button">New Invoice</button>
+          <button class="nav-link" data-view="invoices" type="button">Invoices</button>
+          <button class="nav-link" data-view="clients" type="button">Clients</button>
+          <button class="nav-link" data-view="settings" type="button">Settings</button>
+          <button class="nav-link" data-view="backup" type="button">Backup</button>
+        </nav>
+
+        <div class="sidebar-note">
+          <strong>Private by default.</strong>
+          <span>Data stays in this browser unless you export it.</span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="current-date-label">Australia</p>
+            <h2 id="view-title">Dashboard</h2>
+          </div>
+          <div class="topbar__actions">
+            <button class="button button--ghost" id="print-button" type="button">Print / PDF</button>
+            <button class="button button--primary" id="new-invoice-button" type="button">+ New Invoice</button>
+          </div>
+        </header>
+
+        <section class="view is-active" id="view-dashboard" aria-labelledby="view-title">
+          <div class="metrics-grid" id="dashboard-metrics"></div>
+          <div class="content-grid">
+            <section class="card card--span-2">
+              <div class="section-header">
+                <div>
+                  <p class="eyebrow">Recent activity</p>
+                  <h3>Recent invoices</h3>
+                </div>
+                <button class="button button--secondary" data-view-target="invoices" type="button">View all</button>
+              </div>
+              <div id="recent-invoices" class="list-stack"></div>
+            </section>
+            <section class="card">
+              <div class="section-header">
+                <div>
+                  <p class="eyebrow">Next step</p>
+                  <h3>Setup status</h3>
+                </div>
+              </div>
+              <div id="setup-status" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="view-builder" aria-labelledby="view-title">
+          <div class="builder-layout">
+            <form class="card form-card" id="invoice-form">
+              <div class="section-header">
+                <div>
+                  <p class="eyebrow">Invoice builder</p>
+                  <h3>Create or edit invoice</h3>
+                </div>
+                <span class="status-pill" id="invoice-status-pill">Draft</span>
+              </div>
+
+              <div class="form-grid">
+                <label><span>Invoice number</span><input id="invoice-number" autocomplete="off" /></label>
+                <label><span>Status</span><select id="invoice-status"><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option></select></label>
+                <label><span>Invoice date</span><input id="invoice-date" type="date" /></label>
+                <label><span>Due date</span><input id="due-date" type="date" /></label>
+              </div>
+
+              <hr />
+
+              <div class="section-header section-header--compact">
+                <div><p class="eyebrow">Client</p><h3>Bill to</h3></div>
+                <select id="client-select" class="compact-select"><option value="">Manual entry</option></select>
+              </div>
+
+              <div class="form-grid">
+                <label><span>Client name</span><input id="client-name" autocomplete="organization" placeholder="Client or business name" /></label>
+                <label><span>Client email</span><input id="client-email" type="email" autocomplete="email" placeholder="client@example.com" /></label>
+                <label class="form-grid__wide"><span>Client address</span><textarea id="client-address" rows="2" placeholder="Street, suburb, state, postcode"></textarea></label>
+                <label><span>Client ABN <small>optional</small></span><input id="client-abn" inputmode="numeric" autocomplete="off" placeholder="11 digits" /></label>
+                <label><span>Reference / PO <small>optional</small></span><input id="invoice-reference" autocomplete="off" placeholder="Reference or PO number" /></label>
+              </div>
+
+              <hr />
+
+              <div class="section-header section-header--compact">
+                <div><p class="eyebrow">Items</p><h3>Services / supplies</h3></div>
+                <button class="button button--secondary" id="add-line-button" type="button">+ Add item</button>
+              </div>
+              <div class="line-items" id="line-items"></div>
+              <div class="totals-card" id="totals-editor"></div>
+
+              <label><span>Notes / terms</span><textarea id="invoice-notes" rows="3"></textarea></label>
+
+              <div class="form-actions">
+                <button class="button button--ghost" id="reset-invoice-button" type="button">Reset</button>
+                <button class="button button--secondary" id="save-client-button" type="button">Save client</button>
+                <button class="button button--primary" id="save-invoice-button" type="submit">Save invoice</button>
+              </div>
+            </form>
+
+            <section class="preview-wrap">
+              <div class="preview-toolbar no-print">
+                <span>Live A4 preview</span>
+                <button class="button button--secondary" id="print-preview-button" type="button">Print / PDF</button>
+              </div>
+              <article class="invoice-preview" id="invoice-preview" aria-label="Invoice preview"></article>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="view-invoices" aria-labelledby="view-title">
+          <section class="card">
+            <div class="section-header">
+              <div><p class="eyebrow">Saved records</p><h3>Invoices</h3></div>
+              <div class="filter-row">
+                <select id="invoice-filter"><option value="all">All</option><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select>
+                <input id="invoice-search" placeholder="Search invoices" />
+              </div>
+            </div>
+            <div id="invoice-list" class="table-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-clients" aria-labelledby="view-title">
+          <section class="card">
+            <div class="section-header"><div><p class="eyebrow">Saved contacts</p><h3>Clients</h3></div></div>
+            <div id="client-list" class="table-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-settings" aria-labelledby="view-title">
+          <form class="card settings-form" id="settings-form">
+            <div class="section-header">
+              <div><p class="eyebrow">Business profile</p><h3>Australian invoice settings</h3></div>
+              <button class="button button--primary" type="submit">Save settings</button>
+            </div>
+
+            <div class="form-grid">
+              <label><span>Business name</span><input id="business-name" autocomplete="organization" placeholder="Your business or trading name" /></label>
+              <label><span>ABN</span><input id="business-abn" inputmode="numeric" autocomplete="off" placeholder="11 digits" /><small id="business-abn-help" class="field-help"></small></label>
+              <label><span>Email</span><input id="business-email" type="email" autocomplete="email" /></label>
+              <label><span>Phone</span><input id="business-phone" type="tel" autocomplete="tel" /></label>
+              <label class="form-grid__wide"><span>Business address</span><textarea id="business-address" rows="2" placeholder="Street, suburb, state, postcode"></textarea></label>
+            </div>
+
+            <hr />
+
+            <div class="form-grid">
+              <label class="switch-label"><span>GST registered</span><input id="gst-registered" type="checkbox" /></label>
+              <label><span>GST calculation mode</span><select id="gst-mode"><option value="exclusive">Rates exclude GST</option><option value="inclusive">Rates include GST</option></select></label>
+              <label><span>Default payment terms</span><select id="payment-terms-days"><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></label>
+              <label><span>Invoice prefix</span><input id="invoice-prefix" autocomplete="off" /></label>
+            </div>
+
+            <hr />
+
+            <div class="form-grid">
+              <label><span>Bank name</span><input id="bank-name" autocomplete="off" /></label>
+              <label><span>BSB</span><input id="bank-bsb" inputmode="numeric" autocomplete="off" placeholder="000-000" /></label>
+              <label><span>Account number</span><input id="bank-account-number" inputmode="numeric" autocomplete="off" /></label>
+              <label><span>Account name</span><input id="bank-account-name" autocomplete="off" /></label>
+              <label class="form-grid__wide"><span>Default invoice notes</span><textarea id="default-notes" rows="3"></textarea></label>
+            </div>
+          </form>
+        </section>
+
+        <section class="view" id="view-backup" aria-labelledby="view-title">
+          <section class="card">
+            <div class="section-header"><div><p class="eyebrow">Local data safety</p><h3>Backup and restore</h3></div></div>
+            <div class="backup-grid">
+              <div class="backup-panel"><h4>Export backup</h4><p>Downloads invoices, clients, and settings as a JSON file.</p><button class="button button--primary" id="export-backup-button" type="button">Export backup</button></div>
+              <div class="backup-panel"><h4>Import backup</h4><p>Restores a previously exported InvoiceMate backup.</p><input id="import-backup-input" type="file" accept="application/json" /></div>
+              <div class="backup-panel backup-panel--danger"><h4>Clear local data</h4><p>Deletes all local invoices, clients, and settings from this browser.</p><button class="button button--danger" id="clear-data-button" type="button">Clear data</button></div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
