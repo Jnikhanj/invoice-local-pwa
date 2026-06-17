@@ -1,0 +1,19 @@
+{
+  "name": "InvoiceMate Local",
+  "short_name": "InvoiceMate",
+  "description": "A local-first Australian invoice builder for Safari and modern browsers.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
