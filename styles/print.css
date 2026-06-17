@@ -1,1 +1,33 @@
-/* Print styles will be added in the next pass. */
+body { background: #ffffff !important; }
+
+.sidebar,
+.topbar,
+.no-print,
+.form-card,
+.toast {
+  display: none !important;
+}
+
+.app-shell,
+.main-content,
+.builder-layout,
+.preview-wrap {
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.view { display: none !important; }
+#view-builder { display: block !important; }
+
+.invoice-preview {
+  width: 100% !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
