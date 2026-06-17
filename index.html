@@ -6,11 +6,12 @@
     <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="InvoiceMate" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <title>InvoiceMate Local</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="styles/main.css" />
-    <link rel="stylesheet" href="styles/print.css" media="print" />
+    <link rel="stylesheet" href="styles/main.css?v=0.1.4" />
+    <link rel="stylesheet" href="styles/mobile-fix.css?v=0.1.4" />
+    <link rel="stylesheet" href="styles/print.css?v=0.1.4" media="print" />
   </head>
   <body>
     <div class="app-shell">
@@ -206,6 +207,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="src/app.js"></script>
+    <script type="module" src="src/app.js?v=0.1.4"></script>
   </body>
 </html>

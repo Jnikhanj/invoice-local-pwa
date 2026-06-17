@@ -1,9 +1,10 @@
-const CACHE_NAME = 'invoicemate-local-v0.1.2';
+const CACHE_NAME = 'invoicemate-local-v0.1.4';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './styles/main.css',
+  './styles/mobile-fix.css',
   './styles/print.css',
   './src/app.js',
   './src/db.js',
@@ -25,5 +26,14 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request).catch(() => caches.match('./index.html'))));
+
+  const requestUrl = new URL(event.request.url);
+  const isNavigation = event.request.mode === 'navigate' || requestUrl.pathname.endsWith('/invoice-local-pwa/') || requestUrl.pathname.endsWith('/invoice-local-pwa/index.html');
+
+  if (isNavigation) {
+    event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')));
+    return;
+  }
+
+  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)));
 });
