@@ -1,9 +1,10 @@
-const CACHE_NAME = 'invoicemate-local-v0.1.1';
+const CACHE_NAME = 'invoicemate-local-v0.1.2';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './styles/main.css',
+  './styles/print.css',
   './src/app.js',
   './src/db.js',
   './src/invoice.js',
