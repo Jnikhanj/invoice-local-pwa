@@ -2,16 +2,21 @@
 <html lang="en-AU">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="InvoiceMate" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>InvoiceMate Local</title>
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="styles/main.css?v=0.1.5" />
-    <link rel="stylesheet" href="styles/mobile-fix.css?v=0.1.5" />
-    <link rel="stylesheet" href="styles/print.css?v=0.1.5" media="print" />
+    <link rel="stylesheet" href="styles/main.css?v=0.2.0" />
+    <link rel="stylesheet" href="styles/mobile-fix.css?v=0.2.0" />
+    <style id="critical-ios-fit">
+      html,body{margin:0;width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
+      .app-shell,.sidebar,.main-content{max-width:100vw;min-width:0;}
+      @media(max-width:760px){.sidebar{height:auto!important;min-height:0!important;padding-top:calc(env(safe-area-inset-top,0px) + 44px)!important;}.main-content{overflow-x:hidden!important;}}
+    </style>
+    <link rel="stylesheet" href="styles/print.css?v=0.2.0" media="print" />
   </head>
   <body>
     <div class="app-shell">
@@ -207,6 +212,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="src/app.js?v=0.1.5"></script>
+    <script type="module" src="src/app.js?v=0.2.0"></script>
   </body>
 </html>

@@ -2,15 +2,20 @@
 
 InvoiceMate Local is a local-first, Safari-compatible invoice builder for Australian invoices.
 
-## Version 0.1.4
+## Version 0.2.0
 
-This zip includes the iOS Home Screen layout fix:
+This zip restores the cleaner compact visual style and fixes iPhone Home Screen sizing without making the UI bulky.
 
-- iOS status bar changed from translucent to non-translucent black.
-- Added `styles/mobile-fix.css`.
-- Added safe-area padding for iPhone Home Screen mode.
-- Prevented horizontal overflow on iPhone.
-- Added cache-busting query strings and service worker cache version `0.1.4`.
+## What changed in this design update
+
+- Restored compact horizontal navigation.
+- Removed the bulky 3-column mobile nav.
+- Reduced card, button, and form spacing on iPhone.
+- Changed mobile dashboard metrics to compact two-column cards.
+- Added stronger horizontal overflow protection.
+- Added iPhone safe-area top padding so the header does not sit under the time/status bar.
+- Updated cache-busting versions to `0.2.0`.
+- Added `reset-app-cache.html` to refresh the old app shell safely.
 
 ## Core features
 
@@ -31,11 +36,10 @@ Upload all files and folders in this zip into the root of the `invoice-local-pwa
 
 After upload, open:
 
-`https://jnikhanj.github.io/invoice-local-pwa/?v=0.1.4`
+`https://jnikhanj.github.io/invoice-local-pwa/reset-app-cache.html`
 
-For iPhone Home Screen, delete the old icon first, clear Safari website data for `github.io`, then add the app again.
+Then delete the old Home Screen icon and add the app again from:
 
+`https://jnikhanj.github.io/invoice-local-pwa/index.html?v=0.2.0`
 
-## Mobile fix
-
-Version 0.1.5 includes a stricter iPhone Home Screen layout fix. After uploading the files, open `reset-app-cache.html` once, then add `index.html?v=0.1.5` to the Home Screen again.
+The reset page clears only the app shell cache and service worker. It does not clear saved invoice data.

@@ -1,28 +1,25 @@
-/* InvoiceMate v0.1.5 — hard mobile/iOS Home Screen fix.
-   This file is loaded after main.css and intentionally overrides the desktop/tablet layout. */
+/* InvoiceMate v0.2.0 — clean iPhone/Home Screen layout.
+   Goal: keep the original light, clean design while removing iOS zoom/overflow issues. */
 
 html,
 body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden !important;
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
-  touch-action: pan-y;
 }
 
 body {
   position: relative;
 }
 
-*,
-*::before,
-*::after {
-  max-width: 100%;
-}
-
 .app-shell,
-.main-content,
 .sidebar,
+.main-content,
+.brand,
+.nav-list,
+.topbar,
+.topbar__actions,
 .view,
 .card,
 .metric-card,
@@ -35,164 +32,213 @@ body {
 .list-stack,
 .form-card,
 .settings-form {
-  min-width: 0 !important;
-  max-width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+input,
+textarea,
+select,
+button {
+  font-size: 16px;
 }
 
 @media (max-width: 1180px) {
   .app-shell {
-    display: block !important;
-    width: 100% !important;
-    overflow-x: hidden !important;
+    display: block;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   .sidebar {
-    position: relative !important;
-    top: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
+    position: relative;
+    top: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .main-content {
-    width: 100% !important;
-    overflow-x: hidden !important;
+    width: 100%;
+    overflow-x: hidden;
   }
 }
 
 @media (max-width: 760px) {
+  :root {
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+
   body {
-    background: var(--bg) !important;
+    background: var(--bg);
   }
 
   .sidebar {
-    display: block !important;
-    padding: 64px 16px 16px !important;
-    border-radius: 0 !important;
-    background: #0f172a !important;
+    display: block;
+    padding: 44px 16px 14px;
+    border-radius: 0;
+    background: #0f172a;
   }
 
   @supports (padding: max(0px)) {
     .sidebar {
-      padding-top: max(64px, calc(env(safe-area-inset-top) + 18px)) !important;
-      padding-left: max(16px, env(safe-area-inset-left)) !important;
-      padding-right: max(16px, env(safe-area-inset-right)) !important;
+      padding-top: max(44px, calc(env(safe-area-inset-top) + 16px));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
     }
 
     .main-content {
-      padding-left: max(14px, env(safe-area-inset-left)) !important;
-      padding-right: max(14px, env(safe-area-inset-right)) !important;
-      padding-bottom: max(42px, env(safe-area-inset-bottom)) !important;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+      padding-bottom: max(28px, env(safe-area-inset-bottom));
     }
   }
 
   .brand {
-    display: grid !important;
-    grid-template-columns: 46px minmax(0, 1fr) !important;
-    gap: 10px !important;
-    align-items: center !important;
-    width: 100% !important;
-    margin: 0 0 18px !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0 0 14px;
   }
 
   .brand__mark {
-    width: 46px !important;
-    height: 46px !important;
-    border-radius: 14px !important;
-    font-size: 1rem !important;
-    flex: none !important;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    flex: 0 0 auto;
+    box-shadow: none;
   }
 
   .brand > div:last-child {
-    min-width: 0 !important;
-    overflow: hidden !important;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .brand .eyebrow {
-    margin: 0 0 2px !important;
-    font-size: 0.68rem !important;
-    line-height: 1 !important;
-    letter-spacing: 0.12em !important;
+    margin: 0 0 2px;
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0.13em;
   }
 
   .brand h1 {
-    margin: 0 !important;
-    font-size: clamp(1.75rem, 8vw, 2.35rem) !important;
-    line-height: 0.98 !important;
-    letter-spacing: -0.05em !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    margin: 0;
+    font-size: clamp(1.7rem, 8vw, 2.25rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .nav-list {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 8px !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-list::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-link {
-    width: 100% !important;
-    min-width: 0 !important;
-    padding: 10px 6px !important;
-    border-radius: 12px !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    font-size: 0.88rem !important;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 0;
+    padding: 9px 13px;
+    border-radius: 999px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.94rem;
   }
 
   .sidebar-note {
-    display: none !important;
+    display: none;
   }
 
   .main-content {
-    padding: 16px 14px 42px !important;
-    overflow-x: hidden !important;
+    padding: 16px 14px 28px;
+    overflow-x: hidden;
   }
 
   .topbar {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
-    align-items: stretch !important;
-    margin-bottom: 18px !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 16px;
+  }
+
+  .topbar .eyebrow {
+    font-size: 0.68rem;
   }
 
   .topbar h2 {
-    font-size: clamp(1.75rem, 9vw, 2.2rem) !important;
-    line-height: 1.05 !important;
+    font-size: clamp(1.7rem, 8vw, 2.15rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
   }
 
   .topbar__actions {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    width: 100% !important;
-    gap: 10px !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+    gap: 10px;
+  }
+
+  .button {
+    min-width: 0;
+    padding: 9px 13px;
+    border-radius: 999px;
+    box-shadow: none;
   }
 
   .topbar__actions .button,
-  .form-actions .button,
-  .button {
-    min-width: 0 !important;
+  .form-actions .button {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95rem;
   }
 
-  .topbar__actions .button {
-    width: 100% !important;
-    padding: 11px 10px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    font-size: 0.98rem !important;
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 14px;
   }
 
-  .metrics-grid,
+  .metric-card {
+    width: 100%;
+    padding: 14px;
+    border-radius: 18px;
+    gap: 5px;
+  }
+
+  .metric-card span,
+  .metric-card small {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .metric-card strong {
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+
   .content-grid,
   .builder-layout,
   .form-grid,
@@ -200,113 +246,209 @@ body {
   .invoice-preview__header,
   .invoice-preview__parties,
   .invoice-preview__summary {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    width: 100% !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 12px;
   }
 
-  .metric-card,
   .card,
   .preview-wrap {
-    width: 100% !important;
-    border-radius: 20px !important;
+    width: 100%;
+    border-radius: 20px;
   }
 
-  .metric-card,
   .card {
-    padding: 18px !important;
+    padding: 16px;
   }
 
   .section-header {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    align-items: stretch !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+
+  .section-header--compact {
+    align-items: stretch;
+  }
+
+  .card h3,
+  .backup-panel h4 {
+    font-size: 1.08rem;
   }
 
   .filter-row,
   .row-actions,
   .form-actions {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    width: 100% !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 9px;
   }
 
   input,
   textarea,
   select,
   .compact-select {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  label {
+    gap: 6px;
+  }
+
+  label span {
+    font-size: 0.85rem;
+  }
+
+  .list-card,
+  .table-row,
+  .table-row--client,
+  .check-row,
+  .empty-state {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
   }
 
   .table-row,
   .table-row--client {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    width: 100% !important;
-    overflow: hidden !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 13px;
   }
 
   .empty-state {
-    width: 100% !important;
-    padding: 18px 12px !important;
-    text-align: center !important;
-    overflow: hidden !important;
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .empty-state strong {
+    font-size: 1rem;
+  }
+
+  .empty-state span {
+    font-size: 0.95rem;
   }
 
   .line-item {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    width: 100% !important;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 9px;
+    padding: 12px;
   }
 
   .line-item__description {
-    grid-column: 1 / -1 !important;
+    grid-column: 1 / -1;
+  }
+
+  .line-item__gst {
+    justify-items: start;
+  }
+
+  .icon-button {
+    width: 100%;
+    height: 40px;
+  }
+
+  .totals-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .backup-panel {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .backup-panel .button {
+    width: 100%;
   }
 
   .preview-wrap {
-    position: static !important;
+    position: static;
   }
 
   .invoice-preview {
-    width: 100% !important;
-    min-height: auto !important;
-    padding: 22px 14px !important;
-    overflow-x: hidden !important;
+    width: 100%;
+    min-height: auto;
+    padding: 22px 14px;
+    overflow-x: hidden;
+  }
+
+  .invoice-preview h2 {
+    font-size: 1.55rem;
+  }
+
+  .invoice-preview__parties {
+    margin: 24px 0 18px;
+    padding: 16px;
   }
 
   .invoice-table {
-    display: block !important;
-    width: 100% !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.86rem;
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    padding: 9px 6px;
+  }
+
+  .payment-box,
+  .summary-box {
+    padding: 15px;
+    border-radius: 16px;
   }
 
   .toast {
-    left: 14px !important;
-    right: 14px !important;
-    bottom: 18px !important;
-    max-width: none !important;
+    left: 14px;
+    right: 14px;
+    bottom: 18px;
+    max-width: none;
   }
 }
 
 @media (max-width: 390px) {
-  .brand h1 {
-    font-size: 1.85rem !important;
+  .sidebar {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
-  .brand .eyebrow {
-    font-size: 0.62rem !important;
+  .brand h1 {
+    font-size: 1.75rem;
+  }
+
+  .brand__mark {
+    width: 38px;
+    height: 38px;
   }
 
   .nav-link {
-    font-size: 0.82rem !important;
-    padding: 9px 5px !important;
+    font-size: 0.88rem;
+    padding: 8px 11px;
   }
 
   .topbar__actions {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metric-card {
+    padding: 12px;
   }
 }

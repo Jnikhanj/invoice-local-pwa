@@ -14,9 +14,9 @@
   </head>
   <body>
     <main>
-      <h1>Resetting app cache…</h1>
-      <p>This clears only the app shell cache and old service worker. It does not clear saved invoice data.</p>
-      <a id="openApp" href="./index.html?v=0.1.5">Open InvoiceMate</a>
+      <h1>Refreshing clean design…</h1>
+      <p>This refreshes the app shell so the clean mobile layout loads. It does not clear saved invoice data.</p>
+      <a id="openApp" href="./index.html?v=0.2.0">Open InvoiceMate</a>
     </main>
     <script>
       async function resetAppCache() {
@@ -32,7 +32,7 @@
         } catch (error) {
           console.info('Cache reset skipped:', error);
         }
-        window.location.replace('./index.html?v=0.1.5');
+        window.location.replace('./index.html?v=0.2.0');
       }
       resetAppCache();
     </script>

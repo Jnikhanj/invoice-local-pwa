@@ -723,7 +723,7 @@ function toast(message) {
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js?v=0.1.4').catch((error) => {
+    navigator.serviceWorker.register('./service-worker.js?v=0.2.0').catch((error) => {
       console.info('Service worker registration skipped:', error);
     });
   });

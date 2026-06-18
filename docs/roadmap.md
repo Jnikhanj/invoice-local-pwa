@@ -1,9 +1,10 @@
 # Roadmap
 
-## Version 0.1.4
+## Version 0.2.0
 
-- iOS Home Screen safe-area fix
-- Mobile overflow fix
+- Clean compact iPhone Home Screen layout
+- Horizontal nav restored without page overflow
+- Mobile card and form spacing reduced
 - Service worker cache update
 
 ## Next
