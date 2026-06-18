@@ -1,33 +1,50 @@
-body { background: #ffffff !important; }
+@page {
+  size: A4;
+  margin: 14mm;
+}
 
-.sidebar,
-.topbar,
-.no-print,
-.form-card,
-.toast {
+body {
+  background: #ffffff !important;
+}
+
+.bottom-nav,
+.screen-header,
+.text-tabs,
+.fixed-actions,
+.toast,
+#screen-overview,
+#screen-create,
+#screen-ledger,
+#screen-clients,
+#screen-appearance,
+#screen-settings,
+#screen-backup {
   display: none !important;
 }
 
 .app-shell,
-.main-content,
-.builder-layout,
-.preview-wrap {
+.app-main,
+.screen {
   display: block !important;
+  min-height: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
-  min-height: 0 !important;
-  background: #ffffff !important;
-  box-shadow: none !important;
-  border: 0 !important;
 }
 
-.view { display: none !important; }
-#view-builder { display: block !important; }
+#screen-preview {
+  display: block !important;
+}
 
-.invoice-preview {
+.invoice-paper {
   width: 100% !important;
   min-height: auto !important;
+  margin: 0 !important;
   padding: 0 !important;
-  box-shadow: none !important;
   border: 0 !important;
+  box-shadow: none !important;
+}
+
+.paper-accent-line {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }

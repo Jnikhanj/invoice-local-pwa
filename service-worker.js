@@ -1,38 +1,34 @@
-const CACHE_NAME = 'invoicemate-local-v0.2.0';
+const CACHE_NAME = "invoicemate-v0.3.0";
 const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './styles/main.css?v=0.2.0',
-  './styles/mobile-fix.css?v=0.2.0',
-  './styles/print.css?v=0.2.0',
-  './src/app.js?v=0.2.0',
-  './src/db.js',
-  './src/invoice.js',
-  './src/utils.js'
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./styles/main.css",
+  "./styles/print.css",
+  "./src/app.js",
+  "./reset-app-cache.html"
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL).catch(() => undefined)));
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => (key === CACHE_NAME ? undefined : caches.delete(key)))))
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
 
-  const url = new URL(event.request.url);
-  const isNavigation = event.request.mode === 'navigate' || url.pathname.endsWith('/invoice-local-pwa/') || url.pathname.endsWith('/invoice-local-pwa/index.html');
-  const isFreshAsset = url.searchParams.has('v');
+  const requestUrl = new URL(event.request.url);
+  const isNavigation = event.request.mode === "navigate" || requestUrl.pathname.endsWith("/invoice-local-pwa/") || requestUrl.pathname.endsWith("/index.html");
 
-  if (isNavigation || isFreshAsset) {
-    event.respondWith(fetch(event.request).catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html'))));
+  if (isNavigation) {
+    event.respondWith(fetch(event.request).catch(() => caches.match("./index.html")));
     return;
   }
 

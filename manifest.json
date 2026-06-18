@@ -1,10 +1,11 @@
 {
-  "name": "InvoiceMate Local",
+  "name": "InvoiceMate",
   "short_name": "InvoiceMate",
-  "description": "A local-first invoice builder for Australian invoices.",
-  "start_url": "./index.html?v=0.2.0",
+  "description": "A local-first Australian invoice builder.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a"
+  "background_color": "#f7f7f4",
+  "theme_color": "#f7f7f4",
+  "orientation": "portrait-primary"
 }
