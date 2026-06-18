@@ -34,3 +34,8 @@ After upload, open:
 `https://jnikhanj.github.io/invoice-local-pwa/?v=0.1.4`
 
 For iPhone Home Screen, delete the old icon first, clear Safari website data for `github.io`, then add the app again.
+
+
+## Mobile fix
+
+Version 0.1.5 includes a stricter iPhone Home Screen layout fix. After uploading the files, open `reset-app-cache.html` once, then add `index.html?v=0.1.5` to the Home Screen again.

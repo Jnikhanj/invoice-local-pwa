@@ -1,29 +1,15 @@
 # Roadmap
 
-## Version 0.1.0
+## Version 0.1.4
 
-- Business profile
-- ABN validation helper
-- GST registered toggle
-- GST exclusive and GST inclusive calculations
-- Client details
-- Invoice builder
-- Live Australian invoice preview
-- Local IndexedDB storage
-- Backup export/import
+- iOS Home Screen safe-area fix
+- Mobile overflow fix
+- Service worker cache update
 
-## Version 0.2.0
-
-- Better client database workflow
-- Duplicate invoice
-- Paid date field
-- Search improvements
-- Dashboard reporting
-- App icon files for iOS Home Screen
-
-## Version 0.3.0
+## Next
 
 - Logo upload stored locally
-- Multiple invoice templates
-- Recurring invoice templates
-- CSV export
+- Duplicate invoice
+- Paid date field
+- Better iPhone-first invoice entry screen
+- App icon files for iOS Home Screen
