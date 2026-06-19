@@ -4,28 +4,28 @@
 }
 
 body {
-  background: #ffffff !important;
+  background: #fff !important;
 }
 
-.bottom-nav,
-.screen-header,
-.text-tabs,
-.fixed-actions,
+.wallpaper,
+.large-title,
+.preview-toolbar,
+.liquid-tab-shell,
 .toast,
-#screen-overview,
+#screen-dashboard,
+#screen-invoices,
 #screen-create,
-#screen-ledger,
 #screen-clients,
-#screen-appearance,
 #screen-settings,
+#screen-style,
 #screen-backup {
   display: none !important;
 }
 
-.app-shell,
 .app-main,
 .screen {
   display: block !important;
+  width: 100% !important;
   min-height: 0 !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -41,10 +41,16 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  background: #fff !important;
 }
 
-.paper-accent-line {
+.invoice-paper::before {
+  display: none !important;
+}
+
+.paper-accent {
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }

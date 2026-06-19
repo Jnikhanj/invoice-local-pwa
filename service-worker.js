@@ -1,4 +1,4 @@
-const CACHE_NAME = "invoicemate-v0.3.0";
+const CACHE_NAME = "invoicemate-liquid-v0.4.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "./styles/main.css",
   "./styles/print.css",
   "./src/app.js",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
   "./reset-app-cache.html"
 ];
 

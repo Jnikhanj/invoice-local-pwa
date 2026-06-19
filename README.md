@@ -1,35 +1,24 @@
-# InvoiceMate v0.3.0
+# InvoiceMate Liquid Glass v0.4.0
 
-Minimal Apple-style local invoice app for Australian invoices.
+A local-first Australian invoice builder with an Apple Liquid Glass-inspired interface.
 
-## What changed
+## Important design changes
 
-- Rebuilt UI around Apple system fonts:
-  `-apple-system`, `BlinkMacSystemFont`, `SF Pro Text`, `SF Pro Display`, `system-ui`.
-- Minimal Swiss/document style.
-- Removed pill-heavy UI.
-- Added clean text tabs, square/small mark, line-based forms, and document-first invoice preview.
-- Added appearance customisation:
-  - Accent: Teal, Forest, Navy, Wine, Ochre, Black
-  - Density: Compact, Comfortable, Large text
-  - Invoice templates: Classic, Modern, Compact
-- Local-first storage using browser localStorage.
-- Australian conventions:
-  - AUD formatting
-  - ABN field and local checksum validation
-  - BSB formatting
-  - GST registered toggle
-  - GST exclusive/inclusive calculations
-  - 10% GST
-- Print/PDF stylesheet.
-- Cache reset page.
+- Floating dark Liquid Glass tab bar.
+- Separate trailing search control.
+- New Invoice is an action, not a tab.
+- Main content stays readable; glass is used mainly for navigation and controls.
+- Smaller selected tab capsule.
+- Rounder, softer glass panels.
+- Professional invoice preview with subtle liquid accent.
+- Glass strength, accent tint and invoice skin settings.
 
-## Upload instructions
+## Upload
 
-Upload the contents of this folder to the root of the GitHub Pages repository.
+Upload the contents of this ZIP into the root of your GitHub Pages repository.
 
 Then open:
 
-`https://jnikhanj.github.io/invoice-local-pwa/reset-app-cache.html`
+https://jnikhanj.github.io/invoice-local-pwa/reset-app-cache.html
 
-After it redirects, delete and re-add the Home Screen app if needed.
+Delete and re-add the Home Screen icon if iPhone still shows the old cached version.

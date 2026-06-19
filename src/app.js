@@ -1,6 +1,6 @@
 (() => {
+  const STORAGE_KEY = "invoicemate.liquid.v040";
   const GST_RATE = 0.10;
-  const STORAGE_KEY = "invoicemate.v030";
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
@@ -21,20 +21,18 @@
       bankAccountName: "",
       defaultNotes: "Payment is due by the due date. Please include the invoice number as the payment reference."
     },
-    appearance: {
-      theme: "teal",
-      density: "comfortable",
+    style: {
+      liquid: "medium",
+      tint: "aqua",
       template: "classic"
     },
     clients: [],
     invoices: [],
-    meta: {
-      sequence: 1
-    }
+    meta: { sequence: 1 }
   };
 
   let state = loadState();
-  let route = "overview";
+  let route = "dashboard";
   let activeStep = "items";
   let filter = "all";
   let search = "";
@@ -43,7 +41,7 @@
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
-    applyAppearance();
+    applyStyle();
     bindEvents();
     fillSettingsForm();
     hydrateDraft();
@@ -53,14 +51,11 @@
 
   function bindEvents() {
     document.body.addEventListener("click", (event) => {
-      const routeTarget = event.target.closest("[data-route]");
-      if (routeTarget) {
-        showRoute(routeTarget.dataset.route);
-      }
+      const routeBtn = event.target.closest("[data-route]");
+      if (routeBtn) showRoute(routeBtn.dataset.route);
 
       if (event.target.closest("[data-new-invoice]")) {
         draft = newDraft();
-        activeStep = "client";
         hydrateDraft();
         showRoute("create");
         showStep("client");
@@ -69,43 +64,34 @@
       if (event.target.closest("[data-reset-draft]")) {
         draft = newDraft();
         hydrateDraft();
-        renderDraft();
         showToast("Draft reset.");
       }
 
-      const stepButton = event.target.closest("[data-step]");
-      if (stepButton) showStep(stepButton.dataset.step);
+      const stepBtn = event.target.closest("[data-step]");
+      if (stepBtn) showStep(stepBtn.dataset.step);
 
-      const filterButton = event.target.closest("[data-filter]");
-      if (filterButton) {
-        filter = filterButton.dataset.filter;
-        $$(".small-tabs .text-tab").forEach(btn => btn.classList.toggle("is-active", btn === filterButton));
+      const filterBtn = event.target.closest("[data-filter]");
+      if (filterBtn) {
+        filter = filterBtn.dataset.filter;
+        $$("[data-filter]").forEach(btn => btn.classList.toggle("is-active", btn === filterBtn));
         renderLedger();
       }
 
-      const themeButton = event.target.closest("[data-theme-choice]");
-      if (themeButton) {
-        state.appearance.theme = themeButton.dataset.themeChoice;
+      const tintBtn = event.target.closest("[data-tint-choice]");
+      if (tintBtn) {
+        state.style.tint = tintBtn.dataset.tintChoice;
         saveState();
-        applyAppearance();
-        renderAppearance();
+        applyStyle();
+        renderStyle();
         renderPreview();
       }
 
-      const densityButton = event.target.closest("[data-density-choice]");
-      if (densityButton) {
-        state.appearance.density = densityButton.dataset.densityChoice;
+      const templateBtn = event.target.closest("[data-template-choice]");
+      if (templateBtn) {
+        state.style.template = templateBtn.dataset.templateChoice;
         saveState();
-        applyAppearance();
-        renderAppearance();
-      }
-
-      const templateButton = event.target.closest("[data-template-choice]");
-      if (templateButton) {
-        state.appearance.template = templateButton.dataset.templateChoice;
-        saveState();
-        applyAppearance();
-        renderAppearance();
+        applyStyle();
+        renderStyle();
         renderPreview();
       }
 
@@ -115,17 +101,16 @@
         if (invoice) {
           draft = clone(invoice);
           hydrateDraft();
-          activeStep = "review";
           showRoute("create");
           showStep("review");
         }
       }
 
-      const deleteInvoice = event.target.closest("[data-delete-invoice]");
-      if (deleteInvoice) deleteInvoiceById(deleteInvoice.dataset.deleteInvoice);
-
       const markPaid = event.target.closest("[data-mark-paid]");
       if (markPaid) markInvoicePaid(markPaid.dataset.markPaid);
+
+      const deleteClient = event.target.closest("[data-delete-client]");
+      if (deleteClient) deleteClientById(deleteClient.dataset.deleteClient);
 
       const useClient = event.target.closest("[data-use-client]");
       if (useClient) {
@@ -137,9 +122,6 @@
           showStep("items");
         }
       }
-
-      const deleteClient = event.target.closest("[data-delete-client]");
-      if (deleteClient) deleteClientById(deleteClient.dataset.deleteClient);
 
       if (event.target.closest("[data-print]")) window.print();
     });
@@ -160,6 +142,12 @@
       renderLedger();
     });
 
+    $("#glassRange").addEventListener("input", (event) => {
+      state.style.liquid = ["clear", "medium", "frosted"][Number(event.target.value)] || "medium";
+      saveState();
+      applyStyle();
+    });
+
     $("#exportBackupBtn").addEventListener("click", exportBackup);
     $("#importBackupInput").addEventListener("change", importBackup);
     $("#clearDataBtn").addEventListener("click", clearLocalData);
@@ -177,12 +165,19 @@
     route = nextRoute;
     document.body.dataset.route = nextRoute;
     $$(".screen").forEach(screen => screen.classList.toggle("is-active", screen.id === `screen-${nextRoute}`));
-    $$(".nav-item").forEach(btn => btn.classList.toggle("is-active", btn.dataset.route === nextRoute || (nextRoute === "create" && btn.hasAttribute("data-new-invoice"))));
+
+    $$(".tab-item").forEach(btn => {
+      const active = btn.dataset.route === nextRoute || (nextRoute === "preview" && btn.dataset.route === "invoices");
+      btn.classList.toggle("is-active", active);
+    });
+
     if (nextRoute === "preview") renderPreview();
-    if (nextRoute === "ledger") renderLedger();
+    if (nextRoute === "invoices") renderLedger();
     if (nextRoute === "clients") renderClients();
     if (nextRoute === "settings") fillSettingsForm();
-    scrollTo({ top: 0, behavior: "smooth" });
+    if (nextRoute === "style") renderStyle();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function showStep(step) {
@@ -195,8 +190,7 @@
 
   function loadState() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      return mergeDeep(clone(defaultState), saved || {});
+      return mergeDeep(clone(defaultState), JSON.parse(localStorage.getItem(STORAGE_KEY)) || {});
     } catch {
       return clone(defaultState);
     }
@@ -221,14 +215,18 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function uid(prefix) {
+    if (crypto.randomUUID) return `${prefix}-${crypto.randomUUID()}`;
+    return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
   function todayISO() {
-    const formatter = new Intl.DateTimeFormat("en-CA", {
+    return new Intl.DateTimeFormat("en-CA", {
       timeZone: "Australia/Melbourne",
       year: "numeric",
       month: "2-digit",
       day: "2-digit"
-    });
-    return formatter.format(new Date());
+    }).format(new Date());
   }
 
   function addDaysISO(dateString, days) {
@@ -237,9 +235,8 @@
     return date.toISOString().slice(0, 10);
   }
 
-  function uid(prefix) {
-    if (crypto.randomUUID) return `${prefix}-${crypto.randomUUID()}`;
-    return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  function newLine() {
+    return { id: uid("line"), description: "", quantity: 1, rate: 0, gstApplies: true };
   }
 
   function newDraft() {
@@ -257,10 +254,6 @@
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-  }
-
-  function newLine() {
-    return { id: uid("line"), description: "", quantity: 1, rate: 0, gstApplies: true };
   }
 
   function hydrateDraft() {
@@ -323,7 +316,7 @@
 
   function removeLineItem(id) {
     if (draft.lineItems.length <= 1) {
-      showToast("At least one line item is required.");
+      showToast("At least one item is required.");
       return;
     }
     draft.lineItems = draft.lineItems.filter(item => item.id !== id);
@@ -403,7 +396,7 @@
       return;
     }
     if (!draft.lineItems.some(item => String(item.description || "").trim())) {
-      showToast("Add at least one item description.");
+      showToast("Add an item description.");
       showStep("items");
       return;
     }
@@ -418,8 +411,8 @@
       updatedAt: new Date().toISOString()
     };
 
-    const existingIndex = state.invoices.findIndex(item => item.id === invoice.id);
-    if (existingIndex >= 0) state.invoices[existingIndex] = invoice;
+    const existing = state.invoices.findIndex(item => item.id === invoice.id);
+    if (existing >= 0) state.invoices[existing] = invoice;
     else state.invoices.unshift(invoice);
 
     advanceSequence(invoice.invoiceNumber);
@@ -436,14 +429,6 @@
     if (used >= state.meta.sequence) state.meta.sequence = used + 1;
   }
 
-  function deleteInvoiceById(id) {
-    if (!confirm("Delete this invoice?")) return;
-    state.invoices = state.invoices.filter(item => item.id !== id);
-    saveState();
-    renderAll();
-    showToast("Invoice deleted.");
-  }
-
   function markInvoicePaid(id) {
     const invoice = state.invoices.find(item => item.id === id);
     if (!invoice) return;
@@ -456,13 +441,11 @@
   }
 
   function populateClientSelect() {
-    const options = [`<option value="">Manual entry</option>`].concat(
-      state.clients
-        .slice()
-        .sort((a, b) => (a.name || "").localeCompare(b.name || ""))
-        .map(client => `<option value="${escapeHTML(client.id)}">${escapeHTML(client.name)}</option>`)
-    );
-    $("#clientSelect").innerHTML = options.join("");
+    $("#clientSelect").innerHTML = [`<option value="">Manual entry</option>`].concat(
+      state.clients.slice().sort((a, b) => (a.name || "").localeCompare(b.name || "")).map(client =>
+        `<option value="${escapeHTML(client.id)}">${escapeHTML(client.name)}</option>`
+      )
+    ).join("");
   }
 
   function applySelectedClient() {
@@ -500,7 +483,7 @@
   }
 
   function deleteClientById(id) {
-    if (!confirm("Delete this client? Existing invoices keep their saved client details.")) return;
+    if (!confirm("Delete this client? Existing invoices keep their saved details.")) return;
     state.clients = state.clients.filter(item => item.id !== id);
     saveState();
     renderClients();
@@ -512,7 +495,7 @@
     renderOverview();
     renderLedger();
     renderClients();
-    renderAppearance();
+    renderStyle();
     renderPreview();
   }
 
@@ -520,7 +503,8 @@
     const today = todayISO();
     const open = state.invoices.filter(inv => inv.status !== "paid");
     const outstanding = open.reduce((sum, inv) => sum + Number(inv.total || 0), 0);
-    const paidMonth = state.invoices.filter(inv => inv.status === "paid" && String(inv.paidAt || inv.updatedAt || "").slice(0, 7) === today.slice(0, 7))
+    const paidMonth = state.invoices
+      .filter(inv => inv.status === "paid" && String(inv.paidAt || inv.updatedAt || "").slice(0, 7) === today.slice(0, 7))
       .reduce((sum, inv) => sum + Number(inv.total || 0), 0);
     const drafts = state.invoices.filter(inv => inv.status === "draft").length;
     const dueSoon = state.invoices.filter(inv => inv.status !== "paid" && inv.dueDate && inv.dueDate >= today && inv.dueDate <= addDaysISO(today, 7)).length;
@@ -528,30 +512,29 @@
     $("#outstandingAmount").textContent = money(outstanding);
     $("#summaryStatus").textContent = outstanding > 0 ? "Open" : "Clear";
     $("#outstandingHelper").textContent = outstanding > 0 ? "Invoices awaiting payment" : "No unpaid invoices";
-    $("#openInvoiceCount").textContent = `${open.length} open`;
+    $("#openInvoiceCount").textContent = `${open.length}`;
     $("#paidThisMonth").textContent = money(paidMonth);
     $("#draftCount").textContent = drafts;
     $("#dueSoonCount").textContent = dueSoon;
 
     const recent = state.invoices.slice(0, 4);
-    $("#recentList").innerHTML = recent.length ? recent.map(invoiceListRow).join("") : `<div class="empty-state">No invoices yet. Create your first invoice to begin.</div>`;
+    $("#recentList").innerHTML = recent.length ? recent.map(invoiceRowCard).join("") : `<div class="empty-state">No invoices yet. Create one to begin.</div>`;
   }
 
   function renderLedger() {
     let invoices = state.invoices.slice();
-
     if (filter !== "all") invoices = invoices.filter(inv => displayStatus(inv) === filter);
     if (search) invoices = invoices.filter(inv => `${inv.invoiceNumber} ${inv.client?.name} ${inv.total}`.toLowerCase().includes(search));
 
     $("#invoiceRows").innerHTML = invoices.length ? invoices.map(invoiceLedgerRow).join("") : `
-      <div class="empty-state">No invoices found. <button class="text-action" type="button" data-new-invoice>Create invoice</button></div>
+      <div class="empty-state">No invoices found. <button class="link-button" type="button" data-new-invoice>Create invoice</button></div>
     `;
   }
 
-  function invoiceListRow(invoice) {
+  function invoiceRowCard(invoice) {
     return `
-      <div class="list-row">
-        <button type="button" class="row-main" data-edit-invoice="${escapeHTML(invoice.id)}">
+      <div class="row-card">
+        <button type="button" data-edit-invoice="${escapeHTML(invoice.id)}">
           <strong>${escapeHTML(invoice.invoiceNumber)}</strong>
           <span>${escapeHTML(invoice.client?.name || "No client")} · ${formatDate(invoice.dueDate)}</span>
         </button>
@@ -577,7 +560,7 @@
         </button>
         <div>
           <strong>${money(invoice.total)}</strong>
-          <span>${invoice.status !== "paid" ? `<button class="text-action small" type="button" data-mark-paid="${escapeHTML(invoice.id)}">Paid</button>` : "Paid"}</span>
+          <span>${invoice.status !== "paid" ? `<button class="link-button" type="button" data-mark-paid="${escapeHTML(invoice.id)}">Paid</button>` : "Paid"}</span>
         </div>
       </div>
     `;
@@ -586,14 +569,12 @@
   function renderClients() {
     const clients = state.clients.slice().sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     $("#clientRows").innerHTML = clients.length ? clients.map(client => `
-      <div class="list-row">
-        <button type="button" class="row-main" data-use-client="${escapeHTML(client.id)}">
+      <div class="row-card">
+        <button type="button" data-use-client="${escapeHTML(client.id)}">
           <strong>${escapeHTML(client.name)}</strong>
           <span>${escapeHTML(client.email || "No email")} ${client.abn ? "· ABN " + formatABN(client.abn) : ""}</span>
         </button>
-        <div class="row-end">
-          <button class="text-action small" type="button" data-delete-client="${escapeHTML(client.id)}">Delete</button>
-        </div>
+        <div class="row-end"><button class="link-button" type="button" data-delete-client="${escapeHTML(client.id)}">Delete</button></div>
       </div>
     `).join("") : `<div class="empty-state">No saved clients. Save a client from the invoice form.</div>`;
   }
@@ -613,6 +594,8 @@
       `;
     }).join("");
 
+    $("#templateName").textContent = templateLabel(state.style.template);
+
     $("#invoicePreview").innerHTML = `
       <header class="paper-header">
         <div>
@@ -624,12 +607,12 @@
         </div>
         <div class="paper-meta">
           <strong>${escapeHTML(inv.invoiceNumber || "—")}</strong>
-          <p class="paper-muted">Date ${formatDate(inv.invoiceDate)}</p>
+          <p class="paper-muted">${formatDate(inv.invoiceDate)}</p>
           <p class="paper-muted">Due ${formatDate(inv.dueDate)}</p>
           ${inv.reference ? `<p class="paper-muted">Ref ${escapeHTML(inv.reference)}</p>` : ""}
         </div>
       </header>
-      <div class="paper-accent-line"></div>
+      <div class="paper-accent"></div>
       <section class="paper-bill">
         <p class="paper-label">Bill to</p>
         <p class="paper-business">${escapeHTML(inv.client?.name || "Client Name")}</p>
@@ -653,16 +636,16 @@
     `;
   }
 
-  function renderAppearance() {
-    $$("[data-theme-choice]").forEach(btn => btn.classList.toggle("is-active", btn.dataset.themeChoice === state.appearance.theme));
-    $$("[data-density-choice]").forEach(btn => btn.classList.toggle("is-active", btn.dataset.densityChoice === state.appearance.density));
-    $$("[data-template-choice]").forEach(btn => btn.classList.toggle("is-active", btn.dataset.templateChoice === state.appearance.template));
+  function renderStyle() {
+    $("#glassRange").value = { clear: 0, medium: 1, frosted: 2 }[state.style.liquid] ?? 1;
+    $$("[data-tint-choice]").forEach(btn => btn.classList.toggle("is-active", btn.dataset.tintChoice === state.style.tint));
+    $$("[data-template-choice]").forEach(btn => btn.classList.toggle("is-active", btn.dataset.templateChoice === state.style.template));
   }
 
-  function applyAppearance() {
-    document.body.dataset.theme = state.appearance.theme;
-    document.body.dataset.density = state.appearance.density;
-    document.body.dataset.template = state.appearance.template;
+  function applyStyle() {
+    document.body.dataset.liquid = state.style.liquid;
+    document.body.dataset.tint = state.style.tint;
+    document.body.dataset.template = state.style.template;
   }
 
   function fillSettingsForm() {
@@ -688,7 +671,9 @@
       event.target.value = formatABN(event.target.value);
       renderABNHelp();
     }
-    if (event.target.id === "bankBsb") event.target.value = formatBSB(event.target.value);
+    if (event.target.id === "bankBsb") {
+      event.target.value = formatBSB(event.target.value);
+    }
   }
 
   function saveSettings() {
@@ -714,8 +699,8 @@
   }
 
   function renderABNHelp() {
-    const abn = normaliseABN($("#businessAbn").value);
     const help = $("#abnHelp");
+    const abn = normaliseABN($("#businessAbn").value);
     if (!abn) {
       help.textContent = "Enter your 11-digit Australian Business Number.";
       return;
@@ -725,20 +710,15 @@
   }
 
   function exportBackup() {
-    const data = {
-      app: "InvoiceMate",
-      version: "0.3.0",
-      exportedAt: new Date().toISOString(),
-      state
-    };
+    const data = { app: "InvoiceMate", version: "0.4.0", exportedAt: new Date().toISOString(), state };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `invoicemate-backup-${todayISO()}.json`;
-    document.body.append(link);
-    link.click();
-    link.remove();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoicemate-backup-${todayISO()}.json`;
+    document.body.append(a);
+    a.click();
+    a.remove();
     URL.revokeObjectURL(url);
     showToast("Backup exported.");
   }
@@ -752,13 +732,12 @@
       state = mergeDeep(clone(defaultState), backup.state);
       saveState();
       draft = newDraft();
-      applyAppearance();
-      fillSettingsForm();
+      applyStyle();
       hydrateDraft();
+      fillSettingsForm();
       renderAll();
       showToast("Backup imported.");
-    } catch (error) {
-      console.error(error);
+    } catch {
       showToast("Backup import failed.");
     } finally {
       event.target.value = "";
@@ -766,11 +745,11 @@
   }
 
   function clearLocalData() {
-    if (!confirm("Clear all local InvoiceMate data from this browser? Export a backup first if needed.")) return;
+    if (!confirm("Clear all local InvoiceMate data? Export a backup first if needed.")) return;
     localStorage.removeItem(STORAGE_KEY);
     state = clone(defaultState);
     draft = newDraft();
-    applyAppearance();
+    applyStyle();
     hydrateDraft();
     fillSettingsForm();
     renderAll();
@@ -786,18 +765,22 @@
     return ({ draft: "Draft", sent: "Sent", paid: "Paid", overdue: "Overdue" })[status] || "Draft";
   }
 
+  function templateLabel(template) {
+    return ({ classic: "Classic Glass", modern: "Modern Accent", compact: "Compact" })[template] || "Classic Glass";
+  }
+
   function money(value) {
     return new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(Number(value || 0));
   }
 
-  function formatDate(dateString) {
-    if (!dateString) return "—";
-    return new Intl.DateTimeFormat("en-AU", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${dateString}T00:00:00`));
+  function formatDate(value) {
+    if (!value) return "—";
+    return new Intl.DateTimeFormat("en-AU", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T00:00:00`));
   }
 
   function parseAmount(value) {
-    const number = Number(String(value || "").replace(/[^0-9.-]/g, ""));
-    return Number.isFinite(number) ? number : 0;
+    const num = Number(String(value || "").replace(/[^0-9.-]/g, ""));
+    return Number.isFinite(num) ? num : 0;
   }
 
   function round(value) {
@@ -818,7 +801,7 @@
     const digits = normaliseABN(value);
     if (!digits) return { valid: false, reason: "ABN is blank." };
     if (!/^\d{11}$/.test(digits)) return { valid: false, reason: "ABN must contain 11 digits." };
-    const weights = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+    const weights = [10,1,3,5,7,9,11,13,15,17,19];
     const numbers = digits.split("").map(Number);
     numbers[0] -= 1;
     const total = numbers.reduce((sum, digit, index) => sum + digit * weights[index], 0);

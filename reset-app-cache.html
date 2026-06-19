@@ -12,18 +12,30 @@
       place-items: center;
       padding: 24px;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-      background: #f7f7f4;
-      color: #111;
+      color: #0b1220;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(255,255,255,.9), transparent 22%),
+        radial-gradient(circle at 80% 15%, rgba(187,221,241,.75), transparent 26%),
+        linear-gradient(160deg, #dcefea, #f7faf6 55%, #dde8de);
     }
     main {
-      max-width: 440px;
+      max-width: 420px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 34px;
+      background: rgba(255,255,255,.52);
+      box-shadow: 0 18px 45px rgba(23,35,45,.14);
+      backdrop-filter: blur(24px) saturate(1.45);
+      -webkit-backdrop-filter: blur(24px) saturate(1.45);
     }
     h1 {
+      margin: 0 0 10px;
       font-size: 2rem;
-      letter-spacing: -0.05em;
+      letter-spacing: -.06em;
     }
     p {
-      color: #707070;
+      margin: 0;
+      color: #667085;
       line-height: 1.5;
     }
   </style>
@@ -31,7 +43,7 @@
 <body>
   <main>
     <h1>Refreshing InvoiceMate</h1>
-    <p>Old app files are being cleared. Your invoice data is not removed.</p>
+    <p>Old app files are being cleared. Your saved invoices are not removed.</p>
   </main>
   <script>
     (async () => {
@@ -45,7 +57,7 @@
           await Promise.all(keys.map((key) => caches.delete(key)));
         }
       } finally {
-        location.href = "./index.html?v=0.3.0";
+        location.href = "./index.html?v=0.4.0";
       }
     })();
   </script>
