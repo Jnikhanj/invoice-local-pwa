@@ -1,4 +1,4 @@
-# InvoiceMate Liquid Glass v0.4.0
+# InvoiceMate Liquid Glass v0.4.1
 
 A local-first Australian invoice builder with an Apple Liquid Glass-inspired interface.
 
@@ -22,3 +22,10 @@ Then open:
 https://jnikhanj.github.io/invoice-local-pwa/reset-app-cache.html
 
 Delete and re-add the Home Screen icon if iPhone still shows the old cached version.
+
+
+## v0.4.1 fixes
+
+- Redesigned bottom tab bar with cleaner SVG icons and smaller active capsule.
+- Reduced the separate search button size and visual weight.
+- Settings fields now save as you type, so values do not disappear when moving to the next field.

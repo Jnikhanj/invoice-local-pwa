@@ -10,8 +10,8 @@
   <title>InvoiceMate</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="styles/main.css?v=0.4.0" />
-  <link rel="stylesheet" href="styles/print.css?v=0.4.0" media="print" />
+  <link rel="stylesheet" href="styles/main.css?v=0.4.1" />
+  <link rel="stylesheet" href="styles/print.css?v=0.4.1" media="print" />
 </head>
 <body data-route="dashboard" data-liquid="medium" data-tint="aqua" data-template="classic">
   <div class="wallpaper" aria-hidden="true"></div>
@@ -282,15 +282,29 @@
 
   <nav class="liquid-tab-shell" aria-label="Primary navigation">
     <div class="liquid-tabbar">
-      <button type="button" class="tab-item is-active" data-route="dashboard"><span>⌂</span><small>Dashboard</small></button>
-      <button type="button" class="tab-item" data-route="invoices"><span>▤</span><small>Invoices</small></button>
-      <button type="button" class="tab-item" data-route="clients"><span>●</span><small>Clients</small></button>
-      <button type="button" class="tab-item" data-route="settings"><span>⚙</span><small>Settings</small></button>
+      <button type="button" class="tab-item is-active" data-route="dashboard" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 11.2 12 4.8l7.5 6.4v7.6a1.7 1.7 0 0 1-1.7 1.7H6.2a1.7 1.7 0 0 1-1.7-1.7v-7.6Z"/><path d="M9.2 20.5v-6.2h5.6v6.2"/></svg>
+        <small>Home</small>
+      </button>
+      <button type="button" class="tab-item" data-route="invoices" aria-label="Invoices">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.8h7.4L19 8.4v11.8H7a2 2 0 0 1-2-2V5.8a2 2 0 0 1 2-2Z"/><path d="M14.2 3.9v4.8h4.7"/><path d="M8.4 12.4h7.2M8.4 15.6h7.2"/></svg>
+        <small>Invoices</small>
+      </button>
+      <button type="button" class="tab-item" data-route="clients" aria-label="Clients">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.2a4.1 4.1 0 1 0 0-8.2 4.1 4.1 0 0 0 0 8.2Z"/><path d="M4.8 20.2c.8-3.8 3.5-5.7 7.2-5.7s6.4 1.9 7.2 5.7"/></svg>
+        <small>Clients</small>
+      </button>
+      <button type="button" class="tab-item" data-route="settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.7a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Z"/><path d="M19.1 13.4c.1-.5.1-.9.1-1.4s0-.9-.1-1.4l2-1.5-2-3.4-2.4 1a8.4 8.4 0 0 0-2.4-1.4L14 2.7h-4l-.4 2.6a8.4 8.4 0 0 0-2.4 1.4l-2.4-1-2 3.4 2 1.5c-.1.5-.1.9-.1 1.4s0 .9.1 1.4l-2 1.5 2 3.4 2.4-1a8.4 8.4 0 0 0 2.4 1.4l.4 2.6h4l.4-2.6a8.4 8.4 0 0 0 2.4-1.4l2.4 1 2-3.4-2.1-1.5Z"/></svg>
+        <small>Settings</small>
+      </button>
     </div>
-    <button type="button" class="liquid-search" data-route="invoices" aria-label="Search invoices">⌕</button>
+    <button type="button" class="liquid-search" data-route="invoices" aria-label="Search invoices">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.1 4.1"/></svg>
+    </button>
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="src/app.js?v=0.4.0"></script>
+  <script src="src/app.js?v=0.4.1"></script>
 </body>
 </html>

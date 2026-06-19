@@ -668,15 +668,22 @@
 
   function handleSettingsInput(event) {
     if (event.target.id === "businessAbn") {
+      const cursorAtEnd = event.target.selectionStart === event.target.value.length;
       event.target.value = formatABN(event.target.value);
+      if (cursorAtEnd) event.target.setSelectionRange(event.target.value.length, event.target.value.length);
       renderABNHelp();
     }
+
     if (event.target.id === "bankBsb") {
+      const cursorAtEnd = event.target.selectionStart === event.target.value.length;
       event.target.value = formatBSB(event.target.value);
+      if (cursorAtEnd) event.target.setSelectionRange(event.target.value.length, event.target.value.length);
     }
+
+    updateSettingsFromForm();
   }
 
-  function saveSettings() {
+  function updateSettingsFromForm() {
     state.settings = {
       ...state.settings,
       businessName: $("#businessName").value.trim(),
@@ -694,6 +701,11 @@
       bankAccountName: $("#bankAccountName").value.trim()
     };
     saveState();
+  }
+
+  function saveSettings() {
+    updateSettingsFromForm();
+    renderABNHelp();
     renderAll();
     showToast("Settings saved.");
   }
