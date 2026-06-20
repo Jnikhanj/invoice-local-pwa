@@ -1,65 +1,30 @@
-<!doctype html>
-<html lang="en-AU">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reset InvoiceMate Cache</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-      color: #0b1220;
-      background:
-        radial-gradient(circle at 18% 10%, rgba(255,255,255,.9), transparent 22%),
-        radial-gradient(circle at 80% 15%, rgba(187,221,241,.75), transparent 26%),
-        linear-gradient(160deg, #dcefea, #f7faf6 55%, #dde8de);
-    }
-    main {
-      max-width: 420px;
-      padding: 28px;
-      border: 1px solid rgba(255,255,255,.72);
-      border-radius: 34px;
-      background: rgba(255,255,255,.52);
-      box-shadow: 0 18px 45px rgba(23,35,45,.14);
-      backdrop-filter: blur(24px) saturate(1.45);
-      -webkit-backdrop-filter: blur(24px) saturate(1.45);
-    }
-    h1 {
-      margin: 0 0 10px;
-      font-size: 2rem;
-      letter-spacing: -.06em;
-    }
-    p {
-      margin: 0;
-      color: #667085;
-      line-height: 1.5;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Refreshing InvoiceMate</h1>
-    <p>Old app files are being cleared. Your saved invoices are not removed.</p>
-  </main>
-  <script>
-    (async () => {
-      try {
-        if ("serviceWorker" in navigator) {
-          const regs = await navigator.serviceWorker.getRegistrations();
-          await Promise.all(regs.map((reg) => reg.unregister()));
-        }
-        if ("caches" in window) {
-          const keys = await caches.keys();
-          await Promise.all(keys.map((key) => caches.delete(key)));
-        }
-      } finally {
-        location.href = "./index.html?v=0.4.1";
-      }
-    })();
-  </script>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Cache</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; padding: 2rem; text-align: center; }
+      button { padding: 0.75rem 1.5rem; font-size: 1rem; border-radius: 8px; border: none; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1>Reset Cache</h1>
+    <p>If you're seeing an out-of-date version of this app, click the button below to clear cached assets.</p>
+    <button id="reset-btn">Reset</button>
+    <script>
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key)))).then(() => {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(reg => reg.unregister()))).then(() => {
+              alert('Cache cleared. You can now close this page and reload the app.');
+            });
+          } else {
+            alert('Cache cleared.');
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

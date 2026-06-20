@@ -1,310 +1,228 @@
-<!doctype html>
-<html lang="en-AU">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#ecf4f2" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="InvoiceMate" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <title>InvoiceMate</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="assets/icon-192.png" />
-  <link rel="stylesheet" href="styles/main.css?v=0.4.1" />
-  <link rel="stylesheet" href="styles/print.css?v=0.4.1" media="print" />
-</head>
-<body data-route="dashboard" data-liquid="medium" data-tint="aqua" data-template="classic">
-  <div class="wallpaper" aria-hidden="true"></div>
-
-  <main class="app-main">
-    <section class="screen is-active" id="screen-dashboard" aria-labelledby="dashboardTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">InvoiceMate</p>
-          <h1 id="dashboardTitle">Dashboard</h1>
-        </div>
-        <button class="glass-mark" type="button" data-route="style" aria-label="Open style settings">IM</button>
-      </header>
-
-      <div class="floating-toolbar">
-        <button class="toolbar-action" type="button" data-new-invoice>+ New invoice</button>
-      </div>
-
-      <section class="hero-glass" aria-label="Outstanding invoices">
-        <div class="hero-topline">
-          <span>Outstanding</span>
-          <strong id="summaryStatus">Clear</strong>
-        </div>
-        <div class="hero-amount" id="outstandingAmount">$0.00</div>
-        <div class="hairline"></div>
-        <div class="hero-row">
-          <span id="outstandingHelper">No unpaid invoices</span>
-          <strong id="openInvoiceCount">0</strong>
-        </div>
-      </section>
-
-      <section class="content-list">
-        <h2>This month</h2>
-        <div class="data-line"><span>Paid</span><strong id="paidThisMonth">$0.00</strong></div>
-        <div class="data-line"><span>Drafts</span><strong id="draftCount">0</strong></div>
-        <div class="data-line"><span>Due soon</span><strong id="dueSoonCount">0</strong></div>
-      </section>
-
-      <section class="content-list recent-block">
-        <div class="section-row">
-          <h2>Recent invoices</h2>
-          <button class="link-button" type="button" data-route="invoices">View all</button>
-        </div>
-        <div id="recentList"></div>
-      </section>
-    </section>
-
-    <section class="screen" id="screen-invoices" aria-labelledby="invoicesTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Records</p>
-          <h1 id="invoicesTitle">Invoices</h1>
-        </div>
-        <button class="glass-mark" type="button" data-new-invoice aria-label="Create invoice">+</button>
-      </header>
-
-      <label class="glass-search">
-        <span class="sr-only">Search invoice</span>
-        <input id="invoiceSearch" type="search" placeholder="Search invoice or client" />
-      </label>
-
-      <div class="mini-segment" role="tablist" aria-label="Invoice filter">
-        <button type="button" class="is-active" data-filter="all">All</button>
-        <button type="button" data-filter="draft">Draft</button>
-        <button type="button" data-filter="sent">Sent</button>
-        <button type="button" data-filter="paid">Paid</button>
-        <button type="button" data-filter="overdue">Overdue</button>
-      </div>
-
-      <section class="ledger-glass">
-        <div class="ledger-head">
-          <span>Invoice</span>
-          <span>Client</span>
-          <span>AUD</span>
-        </div>
-        <div id="invoiceRows" class="ledger-rows"></div>
-      </section>
-    </section>
-
-    <section class="screen" id="screen-create" aria-labelledby="createTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">New invoice</p>
-          <h1 id="createTitle">Create</h1>
-        </div>
-        <button class="glass-mark" type="button" data-reset-draft aria-label="Reset draft">↺</button>
-      </header>
-
-      <div class="mini-segment create-steps" role="tablist" aria-label="Invoice steps">
-        <button type="button" data-step="client">Client</button>
-        <button type="button" class="is-active" data-step="items">Items</button>
-        <button type="button" data-step="review">Review</button>
-      </div>
-
-      <form id="invoiceForm" class="create-form" autocomplete="off">
-        <section class="form-glass" id="formClient">
-          <h2>Client</h2>
-          <label class="field">
-            <span>Saved client</span>
-            <select id="clientSelect">
-              <option value="">Manual entry</option>
-            </select>
-          </label>
-          <label class="line-field"><span>Client name</span><input id="clientName" placeholder="Client or business name" /></label>
-          <label class="line-field"><span>Email</span><input id="clientEmail" type="email" placeholder="client@example.com" /></label>
-          <label class="line-field"><span>Address</span><textarea id="clientAddress" rows="2" placeholder="Street, suburb, state, postcode"></textarea></label>
-          <label class="line-field"><span>Client ABN optional</span><input id="clientAbn" inputmode="numeric" /></label>
-          <button class="secondary-button full" type="button" id="saveClientBtn">Save client</button>
-        </section>
-
-        <section class="form-glass is-active" id="formItems">
-          <h2>Service item</h2>
-          <div id="lineItems" class="line-items"></div>
-          <button class="link-button" type="button" id="addLineBtn">+ Add item</button>
-        </section>
-
-        <section class="form-glass" id="formReview">
-          <h2>Invoice details</h2>
-          <div class="two-col">
-            <label class="line-field"><span>Invoice number</span><input id="invoiceNumber" /></label>
-            <label class="line-field"><span>Status</span><select id="invoiceStatus"><option value="draft">Draft</option><option value="sent">Sent</option><option value="paid">Paid</option></select></label>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Use default status bar so the tab bar is clearly separated from the system status area -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>InvoiceMate</title>
+    <link rel="manifest" href="manifest.json?v=0.4.3" />
+    <link rel="stylesheet" href="styles/main.css?v=0.4.3" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Home / Dashboard section -->
+      <section id="home-section" class="section active">
+        <header class="page-header">
+          <h1>Home</h1>
+        </header>
+        <div class="content home-content">
+          <div class="summary-cards">
+            <div class="summary-card" id="summary-total">
+              <h2>Total</h2>
+              <p class="value" id="summary-total-value">$0.00</p>
+            </div>
+            <div class="summary-card" id="summary-unpaid">
+              <h2>Unpaid</h2>
+              <p class="value" id="summary-unpaid-value">$0.00</p>
+            </div>
+            <div class="summary-card" id="summary-overdue">
+              <h2>Overdue</h2>
+              <p class="value" id="summary-overdue-value">$0.00</p>
+            </div>
           </div>
-          <div class="two-col">
-            <label class="line-field"><span>Invoice date</span><input id="invoiceDate" type="date" /></label>
-            <label class="line-field"><span>Due date</span><input id="dueDate" type="date" /></label>
+          <div class="recent-list">
+            <h2>Recent Invoices</h2>
+            <ul id="recent-invoices"></ul>
           </div>
-          <label class="line-field"><span>Reference / PO optional</span><input id="invoiceReference" /></label>
-          <label class="line-field"><span>Notes / terms</span><textarea id="invoiceNotes" rows="3"></textarea></label>
-        </section>
-      </form>
-
-      <section class="dark-total-glass">
-        <p>Total payable</p>
-        <strong id="draftTotal">$0.00</strong>
-        <span id="draftTaxSummary">Subtotal $0.00 · GST $0.00</span>
+          <button class="primary-action" id="new-invoice-btn">New Invoice</button>
+        </div>
       </section>
 
-      <div class="action-pair">
-        <button class="secondary-button full" type="button" data-route="preview">Preview</button>
-        <button class="primary-button full" type="button" id="saveInvoiceBtn">Save</button>
+      <!-- Invoices section -->
+      <section id="invoices-section" class="section">
+        <header class="page-header">
+          <h1>Invoices</h1>
+        </header>
+        <div class="content invoices-content">
+          <div class="list-header">
+            <button class="primary-action" id="add-invoice-btn">New Invoice</button>
+          </div>
+          <ul id="invoice-list" class="item-list"></ul>
+        </div>
+      </section>
+
+      <!-- Clients section -->
+      <section id="clients-section" class="section">
+          <header class="page-header">
+            <h1>Clients</h1>
+          </header>
+          <div class="content clients-content">
+            <div class="list-header">
+              <button class="primary-action" id="add-client-btn">New Client</button>
+            </div>
+            <ul id="client-list" class="item-list"></ul>
+          </div>
+      </section>
+
+      <!-- Settings section -->
+      <section id="settings-section" class="section">
+        <header class="page-header">
+          <h1>Settings</h1>
+        </header>
+        <div class="content settings-content">
+          <h2>Business Profile</h2>
+          <form id="business-form" class="settings-form">
+            <label>
+              Business Name
+              <input type="text" id="business-name" autocomplete="organization" />
+            </label>
+            <label>
+              ABN (11 digits)
+              <input type="text" id="business-abn" inputmode="numeric" pattern="\d{11}" maxlength="11" />
+            </label>
+            <label>
+              Address
+              <input type="text" id="business-address" />
+            </label>
+            <label>
+              Email
+              <input type="email" id="business-email" />
+            </label>
+            <label>
+              Phone
+              <input type="tel" id="business-phone" />
+            </label>
+            <label>
+              BSB
+              <input type="text" id="business-bsb" />
+            </label>
+            <label>
+              Account Number
+              <input type="text" id="business-account" />
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="gst-registered" />
+              <span>GST Registered</span>
+            </label>
+          </form>
+          <h2>Appearance</h2>
+          <div class="appearance-options">
+            <div class="option-group">
+              <h3>Accent Colour</h3>
+              <div class="swatch-list" id="accent-options"></div>
+            </div>
+            <div class="option-group">
+              <h3>Glass Strength</h3>
+              <div class="swatch-list" id="glass-options"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Invoice Editor Overlay -->
+      <div id="invoice-editor" class="overlay hidden">
+        <div class="overlay-content">
+          <header class="overlay-header">
+            <h2 id="editor-title">New Invoice</h2>
+            <button class="icon-btn" id="close-editor" aria-label="Close">×</button>
+          </header>
+          <div class="overlay-body">
+            <form id="invoice-form" class="invoice-form">
+              <label>
+                Client
+                <select id="invoice-client"></select>
+              </label>
+              <label>
+                Invoice Date
+                <input type="date" id="invoice-date" />
+              </label>
+              <label>
+                Due Date
+                <input type="date" id="invoice-due" />
+              </label>
+              <div id="line-items">
+                <!-- line items will be inserted here -->
+              </div>
+              <button type="button" id="add-line-item" class="secondary-action">Add Item</button>
+              <div class="totals">
+                <div>
+                  <span>Subtotal</span>
+                  <span id="subtotal-value">$0.00</span>
+                </div>
+                <div>
+                  <span>GST</span>
+                  <span id="gst-value">$0.00</span>
+                </div>
+                <div class="total">
+                  <span>Total</span>
+                  <span id="total-value">$0.00</span>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="primary-action">Save Invoice</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="screen" id="screen-clients" aria-labelledby="clientsTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Bill to</p>
-          <h1 id="clientsTitle">Clients</h1>
+      <!-- Client Editor Overlay -->
+      <div id="client-editor" class="overlay hidden">
+        <div class="overlay-content">
+          <header class="overlay-header">
+            <h2 id="client-editor-title">New Client</h2>
+            <button class="icon-btn" id="close-client-editor" aria-label="Close">×</button>
+          </header>
+          <div class="overlay-body">
+            <form id="client-form" class="client-form">
+              <label>
+                Client Name
+                <input type="text" id="client-name" required />
+              </label>
+              <label>
+                Email
+                <input type="email" id="client-email" />
+              </label>
+              <label>
+                Phone
+                <input type="tel" id="client-phone" />
+              </label>
+              <label>
+                ABN (optional)
+                <input type="text" id="client-abn" maxlength="11" />
+              </label>
+              <label>
+                Address
+                <input type="text" id="client-address" />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-action">Save Client</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <button class="glass-mark" type="button" data-new-invoice aria-label="New invoice">+</button>
-      </header>
-      <div id="clientRows" class="content-list rows-only"></div>
-    </section>
-
-    <section class="screen" id="screen-preview" aria-labelledby="previewTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Tax invoice</p>
-          <h1 id="previewTitle">Preview</h1>
-        </div>
-        <button class="glass-mark" type="button" data-print aria-label="Print invoice">↗</button>
-      </header>
-
-      <section class="preview-toolbar">
-        <span id="templateName">Classic Glass</span>
-        <button type="button" data-print>Export</button>
-      </section>
-
-      <article id="invoicePreview" class="invoice-paper"></article>
-    </section>
-
-    <section class="screen" id="screen-settings" aria-labelledby="settingsTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Business</p>
-          <h1 id="settingsTitle">Settings</h1>
-        </div>
-        <button class="glass-mark" type="button" id="saveSettingsBtn" aria-label="Save settings">✓</button>
-      </header>
-
-      <form id="settingsForm" class="settings-form">
-        <section class="form-glass is-active">
-          <h2>Business profile</h2>
-          <label class="line-field"><span>Business name</span><input id="businessName" placeholder="Your business name" /></label>
-          <label class="line-field"><span>ABN</span><input id="businessAbn" inputmode="numeric" placeholder="11 digits" /><small id="abnHelp"></small></label>
-          <label class="line-field"><span>Email</span><input id="businessEmail" type="email" /></label>
-          <label class="line-field"><span>Phone</span><input id="businessPhone" type="tel" /></label>
-          <label class="line-field"><span>Address</span><textarea id="businessAddress" rows="2"></textarea></label>
-        </section>
-
-        <section class="form-glass is-active">
-          <h2>GST and payment</h2>
-          <label class="toggle-line"><span>GST registered</span><input id="gstRegistered" type="checkbox" /></label>
-          <label class="line-field"><span>GST mode</span><select id="gstMode"><option value="exclusive">Rates exclude GST</option><option value="inclusive">Rates include GST</option></select></label>
-          <label class="line-field"><span>Payment terms</span><select id="paymentTerms"><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></label>
-          <label class="line-field"><span>Invoice prefix</span><input id="invoicePrefix" /></label>
-          <label class="line-field"><span>Bank name</span><input id="bankName" /></label>
-          <label class="line-field"><span>BSB</span><input id="bankBsb" inputmode="numeric" /></label>
-          <label class="line-field"><span>Account number</span><input id="bankAccountNumber" inputmode="numeric" /></label>
-          <label class="line-field"><span>Account name</span><input id="bankAccountName" /></label>
-        </section>
-      </form>
-    </section>
-
-    <section class="screen" id="screen-style" aria-labelledby="styleTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Liquid Glass</p>
-          <h1 id="styleTitle">Style</h1>
-        </div>
-        <button class="glass-mark" type="button" data-route="dashboard" aria-label="Done">✓</button>
-      </header>
-
-      <p class="helper-copy">Glass is used for navigation and controls. Main content stays readable.</p>
-
-      <section class="form-glass is-active style-card">
-        <h2>Glass strength</h2>
-        <input id="glassRange" class="glass-range" type="range" min="0" max="2" step="1" value="1" />
-        <div class="range-labels"><span>Clear</span><span>Balanced</span><span>Frosted</span></div>
-      </section>
-
-      <section class="form-glass is-active style-card">
-        <h2>Accent tint</h2>
-        <div class="swatches">
-          <button type="button" class="swatch is-active" data-tint-choice="aqua" style="--sw:#67e8f9"><span>Aqua</span></button>
-          <button type="button" class="swatch" data-tint-choice="violet" style="--sw:#a78bfa"><span>Violet</span></button>
-          <button type="button" class="swatch" data-tint-choice="blue" style="--sw:#93c5fd"><span>Blue</span></button>
-          <button type="button" class="swatch" data-tint-choice="mint" style="--sw:#86efac"><span>Mint</span></button>
-          <button type="button" class="swatch" data-tint-choice="gold" style="--sw:#fde68a"><span>Gold</span></button>
-        </div>
-      </section>
-
-      <section class="form-glass is-active style-card">
-        <h2>Invoice skin</h2>
-        <button class="setting-row is-active" type="button" data-template-choice="classic"><strong>Classic Glass</strong><span>Professional A4 with subtle liquid edge</span></button>
-        <button class="setting-row" type="button" data-template-choice="modern"><strong>Modern Accent</strong><span>Stronger left accent for branding</span></button>
-        <button class="setting-row" type="button" data-template-choice="compact"><strong>Compact</strong><span>Short one-page service invoice</span></button>
-      </section>
-    </section>
-
-    <section class="screen" id="screen-backup" aria-labelledby="backupTitle">
-      <header class="large-title">
-        <div>
-          <p class="eyebrow">Local data</p>
-          <h1 id="backupTitle">Backup</h1>
-        </div>
-      </header>
-
-      <section class="form-glass is-active">
-        <h2>Export</h2>
-        <p class="helper-copy">Downloads invoices, clients, settings and style as a JSON file.</p>
-        <button class="primary-button full" type="button" id="exportBackupBtn">Export backup</button>
-      </section>
-
-      <section class="form-glass is-active">
-        <h2>Import</h2>
-        <p class="helper-copy">Restores a previous InvoiceMate backup.</p>
-        <label class="file-button"><input id="importBackupInput" type="file" accept="application/json,.json" />Import backup file</label>
-      </section>
-
-      <section class="form-glass is-active danger-card">
-        <h2>Reset</h2>
-        <p class="helper-copy">Deletes all local invoices, clients and settings from this browser.</p>
-        <button class="secondary-button full danger-text" type="button" id="clearDataBtn">Clear local data</button>
-      </section>
-    </section>
-  </main>
-
-  <nav class="liquid-tab-shell" aria-label="Primary navigation">
-    <div class="liquid-tabbar">
-      <button type="button" class="tab-item is-active" data-route="dashboard" aria-label="Dashboard">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 11.2 12 4.8l7.5 6.4v7.6a1.7 1.7 0 0 1-1.7 1.7H6.2a1.7 1.7 0 0 1-1.7-1.7v-7.6Z"/><path d="M9.2 20.5v-6.2h5.6v6.2"/></svg>
-        <small>Home</small>
-      </button>
-      <button type="button" class="tab-item" data-route="invoices" aria-label="Invoices">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.8h7.4L19 8.4v11.8H7a2 2 0 0 1-2-2V5.8a2 2 0 0 1 2-2Z"/><path d="M14.2 3.9v4.8h4.7"/><path d="M8.4 12.4h7.2M8.4 15.6h7.2"/></svg>
-        <small>Invoices</small>
-      </button>
-      <button type="button" class="tab-item" data-route="clients" aria-label="Clients">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.2a4.1 4.1 0 1 0 0-8.2 4.1 4.1 0 0 0 0 8.2Z"/><path d="M4.8 20.2c.8-3.8 3.5-5.7 7.2-5.7s6.4 1.9 7.2 5.7"/></svg>
-        <small>Clients</small>
-      </button>
-      <button type="button" class="tab-item" data-route="settings" aria-label="Settings">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.7a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Z"/><path d="M19.1 13.4c.1-.5.1-.9.1-1.4s0-.9-.1-1.4l2-1.5-2-3.4-2.4 1a8.4 8.4 0 0 0-2.4-1.4L14 2.7h-4l-.4 2.6a8.4 8.4 0 0 0-2.4 1.4l-2.4-1-2 3.4 2 1.5c-.1.5-.1.9-.1 1.4s0 .9.1 1.4l-2 1.5 2 3.4 2.4-1a8.4 8.4 0 0 0 2.4 1.4l.4 2.6h4l.4-2.6a8.4 8.4 0 0 0 2.4-1.4l2.4 1 2-3.4-2.1-1.5Z"/></svg>
-        <small>Settings</small>
-      </button>
+      </div>
     </div>
-    <button type="button" class="liquid-search" data-route="invoices" aria-label="Search invoices">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.1 4.1"/></svg>
-    </button>
-  </nav>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="src/app.js?v=0.4.1"></script>
-</body>
+    <nav class="tabbar glass">
+      <button class="tab-button" data-target="home-section">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 0 1-2 2h-5v-6H10v6H5a2 2 0 0 1-2-2V9.5z"/></svg>
+        <span class="label">Home</span>
+      </button>
+      <button class="tab-button" data-target="invoices-section">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm2 4v2h12V6H6zm0 4v2h12v-2H6zm0 4v2h8v-2H6z"/></svg>
+        <span class="label">Invoices</span>
+      </button>
+      <button class="tab-button" data-target="clients-section">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm-7 7.5a7 7 0 0 1 14 0V22H5z"/></svg>
+        <span class="label">Clients</span>
+      </button>
+      <button class="tab-button" data-target="settings-section">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9.5A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm8.94 2.79 1.46-.85a1 1 0 0 0 0-1.74l-1.46-.85a1 1 0 0 1-.48-.62l-.28-1.62a1 1 0 0 0-1-.83h-1.69a1 1 0 0 1-.94-.65l-.68-1.37a1 1 0 0 0-1.61-.36l-1.27 1.27a1 1 0 0 1-.7.29h-1.68a1 1 0 0 0-.94.65l-.68 1.37a1 1 0 0 1-.94.65H6.82a1 1 0 0 0-1 .83l-.28 1.62a1 1 0 0 1-.48.62L3.6 10.7a1 1 0 0 0 0 1.74l1.46.85a1 1 0 0 1 .48.62l.28 1.62a1 1 0 0 0 1 .83h1.68a1 1 0 0 1 .94.65l.68 1.37a1 1 0 0 0 1.61.36l1.27-1.27a1 1 0 0 1 .7-.29h1.68a1 1 0 0 0 .94-.65l.68-1.37a1 1 0 0 1 .94-.65h1.69a1 1 0 0 0 1-.83l.28-1.62a1 1 0 0 1 .48-.62z"/></svg>
+        <span class="label">Settings</span>
+      </button>
+    </nav>
+    <script src="src/app.js?v=0.4.3" type="module"></script>
+  </body>
 </html>

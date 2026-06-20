@@ -1,21 +1,18 @@
 {
   "name": "InvoiceMate",
   "short_name": "InvoiceMate",
-  "description": "A local-first Australian invoice builder with Liquid Glass style.",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#ecf4f2",
-  "theme_color": "#ecf4f2",
-  "orientation": "portrait-primary",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "icons": [
     {
-      "src": "assets/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
